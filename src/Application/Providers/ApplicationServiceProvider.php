@@ -8,6 +8,18 @@ use Application\Bus\Contracts\CommandBusContract;
 use Application\Bus\Contracts\QueryBusContract;
 use Application\Bus\IlluminateCommandBus;
 use Application\Bus\IlluminateQueryBus;
+use Application\Tenant\CommandHandlers\AddTenantMemberCommandHandler;
+use Application\Tenant\CommandHandlers\AssignTenantMemberRoleCommandHandler;
+use Application\Tenant\CommandHandlers\CreateTenantCommandHandler;
+use Application\Tenant\Commands\AddTenantMemberCommand;
+use Application\Tenant\Commands\AssignTenantMemberRoleCommand;
+use Application\Tenant\Commands\CreateTenantCommand;
+use Application\Tenant\QueryHandlers\GetTenantByIdQueryHandler;
+use Application\Tenant\QueryHandlers\GetTenantMemberByIdQueryHandler;
+use Application\Tenant\QueryHandlers\ListTenantMembersQueryHandler;
+use Application\Tenant\Queries\GetTenantByIdQuery;
+use Application\Tenant\Queries\GetTenantMemberByIdQuery;
+use Application\Tenant\Queries\ListTenantMembersQuery;
 use Application\User\CommandHandlers\CreateUserCommandHandler;
 use Application\User\Commands\CreateUserCommand;
 use Application\User\Contracts\UserServiceContract;
@@ -50,6 +62,9 @@ class ApplicationServiceProvider extends ServiceProvider
     {
         $commandBus = app(CommandBusContract::class);
         $commandBus->register([
+            CreateTenantCommand::class => CreateTenantCommandHandler::class,
+            AddTenantMemberCommand::class => AddTenantMemberCommandHandler::class,
+            AssignTenantMemberRoleCommand::class => AssignTenantMemberRoleCommandHandler::class,
             CreateUserCommand::class => CreateUserCommandHandler::class,
         ]);
     }
@@ -58,6 +73,9 @@ class ApplicationServiceProvider extends ServiceProvider
     {
         $queryBus = app(QueryBusContract::class);
         $queryBus->register([
+            GetTenantByIdQuery::class => GetTenantByIdQueryHandler::class,
+            GetTenantMemberByIdQuery::class => GetTenantMemberByIdQueryHandler::class,
+            ListTenantMembersQuery::class => ListTenantMembersQueryHandler::class,
             GetUserByEmailQuery::class => GetUserByEmailQueryHandler::class,
             GetUserByIdQuery::class => GetUserByIdQueryHandler::class,
         ]);

@@ -7,6 +7,8 @@ use Domain\User\Entities\User;
 use Domain\User\Enums\UserStatus;
 
 it('lists users only for the current tenant', function (): void {
+    /** @var \Tests\TestCase $this */
+
     $tenantA = Tenant::factory()->create();
     $tenantB = Tenant::factory()->create();
 
@@ -26,6 +28,8 @@ it('lists users only for the current tenant', function (): void {
 });
 
 it('does not show a user from another tenant', function (): void {
+    /** @var \Tests\TestCase $this */
+
     $tenantA = Tenant::factory()->create();
     $tenantB = Tenant::factory()->create();
 
@@ -39,6 +43,8 @@ it('does not show a user from another tenant', function (): void {
 });
 
 it('does not update a user from another tenant', function (): void {
+    /** @var \Tests\TestCase $this */
+
     $tenantA = Tenant::factory()->create();
     $tenantB = Tenant::factory()->create();
 
@@ -69,6 +75,8 @@ it('does not update a user from another tenant', function (): void {
 });
 
 it('rejects requests without tenant context', function (): void {
+    /** @var \Tests\TestCase $this */
+
     $response = $this->get('/api/users');
 
     $response->assertBadRequest();

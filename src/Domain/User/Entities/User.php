@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Domain\User\Entities;
 
 use Domain\Tenant\Entities\Tenant;
+use Domain\User\Enums\UserRole;
 use Domain\User\Enums\UserStatus;
 use Domain\User\Factories\UserFactory;
 use Domain\User\Observers\UserObserver;
@@ -31,6 +32,7 @@ class User extends Authenticatable
         'email',
         'password',
         'status',
+        'role',
     ];
 
     /**
@@ -60,6 +62,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'status' => UserStatus::class,
+            'role' => UserRole::class,
         ];
     }
 

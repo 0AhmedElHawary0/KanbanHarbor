@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Domain\User\Enums\UserStatus;
+use Domain\User\Enums\UserRole;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,6 +20,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('email');
             $table->enum('status', UserStatus::values());
+            $table->enum('role', UserRole::values())->default(UserRole::Member->value);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

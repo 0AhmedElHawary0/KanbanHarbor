@@ -7,6 +7,7 @@ use Domain\User\Enums\UserStatus;
 use Domain\Tenant\Entities\Tenant;
 
 it('creates users', function (): void {
+    /** @var \Tests\TestCase $this */
 
     User::factory()->count(5)->create();
 
@@ -17,6 +18,8 @@ it('creates users', function (): void {
 
 
 it('retrieves all users', function (): void {
+    /** @var \Tests\TestCase $this */
+
     $tenant = Tenant::factory()->create();
 
     User::factory()->count(5)->create(['tenant_id' => $tenant->id]);
@@ -34,6 +37,8 @@ it('retrieves all users', function (): void {
 });
 
 it('updates a user', function (): void {
+    /** @var \Tests\TestCase $this */
+
     $tenant = Tenant::factory()->create();
 
     $user = User::factory()->create([
