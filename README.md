@@ -52,11 +52,11 @@ Here are the steps to get your development environment running:
 
 1. Create Project directly via composer:
     ```bash
-     composer create-project shahghasiadil/laravel-clean-architecture-ddd-cqrs
+     composer create-project shahghasiadil/kanbanharbor
     ```
 1. Clone the repository:
     ```bash
-    git clone https://github.com/shahghasiadil/laravel-clean-architecture-ddd-cqrs.git
+    git clone https://github.com/0AhmedElHawary0/KanbanHarbor.git
     ```
 
 ## Project Structure
