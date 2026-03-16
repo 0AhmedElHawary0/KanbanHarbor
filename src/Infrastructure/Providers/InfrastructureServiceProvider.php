@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Infrastructure\Providers;
 
+use Domain\Project\Repositories\ProjectRepositoryContract;
 use Domain\Tenant\Repositories\TenantRepositoryContract;
 use Domain\User\Repositories\UserRepositoryContract;
 use Illuminate\Support\ServiceProvider;
+use Infrastructure\Project\Persistence\Repositories\ProjectRepository;
 use Infrastructure\Tenant\Persistence\Repositories\TenantRepository;
 use Infrastructure\Tenancy\RequestTenantContext;
 use Infrastructure\User\Persistence\Repositories\UserRepository;
@@ -15,6 +17,7 @@ use Shared\Tenancy\TenantContext;
 class InfrastructureServiceProvider extends ServiceProvider
 {
     public $singletons = [
+        ProjectRepositoryContract::class => ProjectRepository::class,
         TenantRepositoryContract::class => TenantRepository::class,
         TenantContext::class => RequestTenantContext::class,
         UserRepositoryContract::class => UserRepository::class,
