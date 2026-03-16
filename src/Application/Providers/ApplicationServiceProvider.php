@@ -11,7 +11,9 @@ use Application\Bus\IlluminateQueryBus;
 use Application\Project\CommandHandlers\CreateProjectCommandHandler;
 use Application\Project\Commands\CreateProjectCommand;
 use Application\Project\QueryHandlers\GetProjectByIdQueryHandler;
+use Application\Project\QueryHandlers\ListTenantProjectsQueryHandler;
 use Application\Project\Queries\GetProjectByIdQuery;
+use Application\Project\Queries\ListTenantProjectsQuery;
 use Application\Tenant\CommandHandlers\AddTenantMemberCommandHandler;
 use Application\Tenant\CommandHandlers\AssignTenantMemberRoleCommandHandler;
 use Application\Tenant\CommandHandlers\CreateTenantCommandHandler;
@@ -79,6 +81,7 @@ class ApplicationServiceProvider extends ServiceProvider
         $queryBus = app(QueryBusContract::class);
         $queryBus->register([
             GetProjectByIdQuery::class => GetProjectByIdQueryHandler::class,
+            ListTenantProjectsQuery::class => ListTenantProjectsQueryHandler::class,
             GetTenantByIdQuery::class => GetTenantByIdQueryHandler::class,
             GetTenantMemberByIdQuery::class => GetTenantMemberByIdQueryHandler::class,
             ListTenantMembersQuery::class => ListTenantMembersQueryHandler::class,

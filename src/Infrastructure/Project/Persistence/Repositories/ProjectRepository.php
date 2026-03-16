@@ -8,6 +8,7 @@ use Application\Project\Data\CreateProjectData;
 use Domain\Project\Entities\Project;
 use Domain\Project\Enums\ProjectStatus;
 use Domain\Project\Repositories\ProjectRepositoryContract;
+use Illuminate\Database\Eloquent\Collection;
 
 final class ProjectRepository implements ProjectRepositoryContract
 {
@@ -27,5 +28,13 @@ final class ProjectRepository implements ProjectRepositoryContract
             ->where('tenant_id', $tenantId)
             ->whereKey($projectId)
             ->first();
+    }
+
+    public function findAllByTenantId(int $tenantId): Collection
+    {
+        return Project::query()
+            ->where('tenant_id', $tenantId)
+            ->orderBy('id')
+            ->get();
     }
 }

@@ -10,6 +10,7 @@ use Application\Project\Commands\CreateProjectCommand;
 use Application\Project\Data\CreateProjectData;
 use Application\Project\Data\ProjectData;
 use Application\Project\Queries\GetProjectByIdQuery;
+use Application\Project\Queries\ListTenantProjectsQuery;
 use Illuminate\Http\JsonResponse;
 use Presentation\Controller;
 use Presentation\TenantManagement\Requests\CreateProjectRequest;
@@ -44,5 +45,18 @@ final class ProjectController extends Controller
         return response()->json([
             'data' => ProjectData::from($project),
         ], Response::HTTP_CREATED);
+    }
+
+    public function view(int $tenantId): JsonResponse
+    {
+        $resolvedTenantId = $this->tenantContext->tenantId();
+
+        abort_if($tenantId !== $resolvedTenantId, Response::HTTP_BAD_REQUEST);
+
+        $projects = $this->queryBus->ask(new ListTenantProjectsQuery($resolvedTenantId));
+
+        return response()->json([
+            'data' => ProjectData::collect($projects),
+        ], Response::HTTP_OK);
     }
 }

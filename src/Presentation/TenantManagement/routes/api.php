@@ -17,4 +17,5 @@ Route::middleware(ResolveTenant::class)->controller(TenantController::class)->gr
 
 Route::middleware(ResolveTenant::class)->controller(ProjectController::class)->group(function (): void {
     Route::post('tenants/{tenantId}/projects', 'store');
+    Route::get('tenants/{tenantId}/projects', 'view');
 });
