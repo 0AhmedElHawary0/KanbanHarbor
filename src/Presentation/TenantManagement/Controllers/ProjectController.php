@@ -25,6 +25,7 @@ final class ProjectController extends Controller
         private readonly TenantContext $tenantContext,
     ) {}
 
+
     public function store(int $tenantId, CreateProjectRequest $request): JsonResponse
     {
         $resolvedTenantId = $this->tenantContext->tenantId();
@@ -47,6 +48,7 @@ final class ProjectController extends Controller
         ], Response::HTTP_CREATED);
     }
 
+
     public function view(int $tenantId): JsonResponse
     {
         $resolvedTenantId = $this->tenantContext->tenantId();
@@ -57,6 +59,22 @@ final class ProjectController extends Controller
 
         return response()->json([
             'data' => ProjectData::collect($projects),
+        ], Response::HTTP_OK);
+    }
+
+
+    public function show(int $tenantId, int $projectId): JsonResponse
+    {
+        $resolvedTenantId = $this->tenantContext->tenantId();
+
+        abort_if($tenantId !== $resolvedTenantId, Response::HTTP_BAD_REQUEST);
+
+        $project = $this->queryBus->ask(new GetProjectByIdQuery($resolvedTenantId, $projectId));
+
+        abort_if($project === null, Response::HTTP_NOT_FOUND);
+
+        return response()->json([
+            'data' => ProjectData::from($project),
         ], Response::HTTP_OK);
     }
 }

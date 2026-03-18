@@ -46,3 +46,20 @@ it('lists projects only for the requested tenant', function (): void {
         expect($project['tenant_id'])->toBe($tenantA->id);
     });
 });
+
+it('get only the project requested for the requested tenant', function (): void {
+    /** @var \Tests\TestCase $this */
+
+    $tenant = Tenant::factory()->create();
+
+    $project = Project::factory()->create([
+        'tenant_id' => $tenant->id,
+        'name' => 'Q2 Platform Launch',
+    ]);
+
+    $response = $this->getJson("/api/tenants/{$tenant->id}/projects/{$project->id}");
+    $response->assertOk()
+        ->assertJsonPath('data.id', $project->id)
+        ->assertJsonPath('data.tenant_id', $tenant->id)
+        ->assertJsonPath('data.name', 'Q2 Platform Launch');
+});
