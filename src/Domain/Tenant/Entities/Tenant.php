@@ -9,10 +9,15 @@ use Domain\User\Entities\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Multitenancy\Concerns\UsesMultitenancyConfig;
+use Spatie\Multitenancy\Contracts\IsTenant;
+use Spatie\Multitenancy\Models\Concerns\ImplementsTenant;
 
-class Tenant extends Model
+class Tenant extends Model implements IsTenant
 {
     use HasFactory;
+    use ImplementsTenant;
+    use UsesMultitenancyConfig;
 
     protected $fillable = [
         'name',

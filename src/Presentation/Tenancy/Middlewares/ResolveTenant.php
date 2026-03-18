@@ -5,36 +5,52 @@ declare(strict_types=1);
 namespace Presentation\Tenancy\Middlewares;
 
 use Closure;
-use Domain\Tenant\Entities\Tenant;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Shared\Tenancy\TenantContext;
+use Spatie\Multitenancy\TenantFinder\TenantFinder;
 use Symfony\Component\HttpFoundation\Response;
 
 final class ResolveTenant
 {
-    public function __construct(private readonly TenantContext $tenantContext) {}
+    public function __construct(
+        private readonly TenantContext $tenantContext,
+        private readonly TenantFinder $tenantFinder,
+    ) {}
 
     public function handle(Request $request, Closure $next): Response
     {
-        $tenantId = $request->route('tenantId') ?? $request->header('X-Tenant-Id');
+        $tenant = $this->tenantFinder->findForRequest($request);
 
-        if (! is_numeric($tenantId) || (int) $tenantId < 1) {
+        if ($tenant === null) {
             return new JsonResponse([
                 'message' => 'A valid tenant context is required.',
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $tenantId = (int) $tenantId;
-
-        if (! Tenant::query()->whereKey($tenantId)->exists()) {
+        // Verify authenticated user belongs to this tenant
+        if ($request->user() !== null && ! $this->userBelongsToTenant($request, $tenant)) {
             return new JsonResponse([
-                'message' => 'Tenant not found.',
-            ], Response::HTTP_NOT_FOUND);
+                'message' => 'You do not have access to this organization.',
+            ], Response::HTTP_FORBIDDEN);
         }
 
-        $this->tenantContext->setTenantId($tenantId);
+        $tenant->makeCurrent();
+        $this->tenantContext->setTenantId((int) data_get($tenant, 'id'));
 
         return $next($request);
+    }
+
+    private function userBelongsToTenant(Request $request, mixed $tenant): bool
+    {
+        $user = $request->user();
+
+        if ($user === null) {
+            return true; // Unauthenticated is allowed here; auth middleware will catch later
+        }
+
+        return $user->tenants()
+            ->whereKey((int) data_get($tenant, 'id'))
+            ->exists();
     }
 }
