@@ -2,9 +2,13 @@
 
 declare(strict_types=1);
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -17,4 +21,34 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {})
-    ->withExceptions(function (Exceptions $exceptions): void {})->create();
+    ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->render(function (ValidationException $exception, Request $request): ?JsonResponse {
+            if (! $request->is('api/*')) {
+                return null;
+            }
+
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => $exception->errors(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        });
+
+        $exceptions->render(function (\Throwable $exception, Request $request): ?JsonResponse {
+            if (! $request->is('api/*')) {
+                return null;
+            }
+
+            if ($exception instanceof ValidationException) {
+                return null;
+            }
+
+            $status = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $message = config('app.debug')
+                ? $exception->getMessage()
+                : 'Server error.';
+
+            return response()->json([
+                'message' => $message,
+            ], $status);
+        });
+    })->create();
