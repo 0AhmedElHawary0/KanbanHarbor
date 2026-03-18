@@ -4,5 +4,6 @@ declare(strict_types=1);
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Presentation\UserManagement\Controllers\AuthController;
 
-Route::get('/user', fn(Request $request) => $request->user())->middleware('auth:sanctum');
+Route::post('auth/register', [AuthController::class, 'register']);

@@ -26,14 +26,16 @@ use Application\Tenant\QueryHandlers\ListTenantMembersQueryHandler;
 use Application\Tenant\Queries\GetTenantByIdQuery;
 use Application\Tenant\Queries\GetTenantMemberByIdQuery;
 use Application\Tenant\Queries\ListTenantMembersQuery;
-use Application\User\CommandHandlers\CreateUserCommandHandler;
-use Application\User\Commands\CreateUserCommand;
-use Application\User\Contracts\UserServiceContract;
+use Application\User\CommandHandlers\RegisterUserCommandHandler;
+use Application\User\CommandHandlers\UpdateUserCommandHandler;
+use Application\User\Commands\RegisterUserCommand;
+use Application\User\Commands\UpdateUserCommand;
 use Application\User\QueryHandlers\GetUserByEmailQueryHandler;
 use Application\User\QueryHandlers\GetUserByIdQueryHandler;
+use Application\User\QueryHandlers\ListUsersQueryHandler;
 use Application\User\Queries\GetUserByEmailQuery;
 use Application\User\Queries\GetUserByIdQuery;
-use Application\User\Services\UserService;
+use Application\User\Queries\ListUsersQuery;
 use Illuminate\Support\ServiceProvider;
 
 class ApplicationServiceProvider extends ServiceProvider
@@ -53,7 +55,6 @@ class ApplicationServiceProvider extends ServiceProvider
     public $singletons = [
         CommandBusContract::class => IlluminateCommandBus::class,
         QueryBusContract::class => IlluminateQueryBus::class,
-        UserServiceContract::class => UserService::class,
     ];
 
     public function register(): void {}
@@ -72,7 +73,8 @@ class ApplicationServiceProvider extends ServiceProvider
             CreateTenantCommand::class => CreateTenantCommandHandler::class,
             AddTenantMemberCommand::class => AddTenantMemberCommandHandler::class,
             AssignTenantMemberRoleCommand::class => AssignTenantMemberRoleCommandHandler::class,
-            CreateUserCommand::class => CreateUserCommandHandler::class,
+            RegisterUserCommand::class => RegisterUserCommandHandler::class,
+            UpdateUserCommand::class => UpdateUserCommandHandler::class,
         ]);
     }
 
@@ -87,6 +89,7 @@ class ApplicationServiceProvider extends ServiceProvider
             ListTenantMembersQuery::class => ListTenantMembersQueryHandler::class,
             GetUserByEmailQuery::class => GetUserByEmailQueryHandler::class,
             GetUserByIdQuery::class => GetUserByIdQueryHandler::class,
+            ListUsersQuery::class => ListUsersQueryHandler::class,
         ]);
     }
 }

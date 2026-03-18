@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Infrastructure\User\Persistence\Repositories;
 
+use Application\User\Data\RegisteredUserData;
 use Application\User\Data\UserData;
 use Domain\User\Entities\User;
 use Domain\User\Repositories\UserRepositoryContract;
@@ -11,14 +12,11 @@ use Illuminate\Database\Eloquent\Collection;
 
 final class UserRepository implements UserRepositoryContract
 {
-    public function save(UserData $data, int $tenantId): string
+    public function register(UserData $data): RegisteredUserData
     {
-        $user = User::create([
-            ...$data->all(),
-            'tenant_id' => $tenantId,
-        ]);
+        $user = User::query()->create($data->all());
 
-        return $user->email;
+        return RegisteredUserData::from($user);
     }
 
     public function findByEmail(string $email, int $tenantId): ?User
