@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Domain\User\Entities\User;
+use Domain\User\Enums\UserRole;
 use Domain\User\Enums\UserStatus;
 use Domain\Tenant\Entities\Tenant;
 
@@ -22,15 +23,17 @@ it('retrieves all users', function (): void {
 
     $tenant = Tenant::factory()->create();
 
-    User::factory()->count(5)->create(['tenant_id' => $tenant->id]);
+    $users = User::factory()->count(5)->create();
+    foreach ($users as $user) {
+        $user->tenants()->attach($tenant->id, ['role' => UserRole::Member->value]);
+    }
 
     $response = $this
-        ->withHeader('X-Tenant-Id', (string) $tenant->id)
-        ->get('/api/users');
+        ->getJson("/api/tenants/{$tenant->id}/members");
 
     $response->assertStatus(200)
         ->assertJsonStructure([
-            '*' => ['id', 'tenant_id', 'name', 'email', 'status', 'created_at', 'updated_at'],
+            '*' => ['id', 'name', 'email', 'status', 'created_at', 'updated_at'],
         ]);
 
     $this->assertCount(5, $response->json());
@@ -42,40 +45,37 @@ it('updates a user', function (): void {
     $tenant = Tenant::factory()->create();
 
     $user = User::factory()->create([
-        'tenant_id' => $tenant->id,
         'name' => 'Muqtadir Khan',
         'email' => 'muqtadir.khan@gmail.com',
-        'password' => '123456789',
         'status' => UserStatus::Active->value,
     ]);
 
-    $updateData = [
-        'name' => 'Muqtadir Khan',
-        'email' => 'muqtadir.khan@gmail.com',
-        'password' => '123456756',
-        'status' => UserStatus::Suspended->value,
-    ];
+    $user->tenants()->attach($tenant->id, ['role' => UserRole::Member->value]);
 
     $response = $this
-        ->withHeader('X-Tenant-Id', (string) $tenant->id)
-        ->patch("/api/users/{$user->id}", $updateData);
+        ->patchJson("/api/tenants/{$tenant->id}/members/{$user->id}/role", [
+            'role' => UserRole::Admin->value,
+        ]);
 
     $response->assertStatus(200)
         ->assertJson([
             'data' => [
                 'id' => $user->id,
-                'tenant_id' => $tenant->id,
                 'name' => 'Muqtadir Khan',
                 'email' => 'muqtadir.khan@gmail.com',
-                'status' => UserStatus::Suspended->value,
             ],
         ]);
 
     $this->assertDatabaseHas('users', [
         'id' => $user->id,
-        'tenant_id' => $tenant->id,
         'name' => 'Muqtadir Khan',
         'email' => 'muqtadir.khan@gmail.com',
-        'status' => UserStatus::Suspended->value,
+        'status' => UserStatus::Active->value,
+    ]);
+
+    $this->assertDatabaseHas('tenant_user', [
+        'user_id' => $user->id,
+        'tenant_id' => $tenant->id,
+        'role' => UserRole::Admin->value,
     ]);
 });

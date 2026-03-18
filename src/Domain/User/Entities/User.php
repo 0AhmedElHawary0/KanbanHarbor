@@ -11,7 +11,7 @@ use Domain\User\Factories\UserFactory;
 use Domain\User\Observers\UserObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -27,12 +27,10 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'tenant_id',
         'name',
         'email',
         'password',
         'status',
-        'role',
     ];
 
     /**
@@ -62,12 +60,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'status' => UserStatus::class,
-            'role' => UserRole::class,
         ];
     }
 
-    public function tenant(): BelongsTo
+    public function tenants(): BelongsToMany
     {
-        return $this->belongsTo(Tenant::class);
+        return $this->belongsToMany(Tenant::class, 'tenant_user')
+            ->withPivot('role')
+            ->withTimestamps();
     }
 }

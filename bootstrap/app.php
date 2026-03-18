@@ -9,6 +9,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -42,7 +43,9 @@ return Application::configure(basePath: dirname(__DIR__))
                 return null;
             }
 
-            $status = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $status = $exception instanceof HttpExceptionInterface
+                ? $exception->getStatusCode()
+                : Response::HTTP_INTERNAL_SERVER_ERROR;
             $message = config('app.debug')
                 ? $exception->getMessage()
                 : 'Server error.';

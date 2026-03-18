@@ -30,45 +30,49 @@ final class TenantRepository implements TenantRepositoryContract
 
     public function addMember(int $tenantId, TenantMemberCreateData $data): User
     {
-        return User::query()->create([
-            'tenant_id' => $tenantId,
+        $user = User::query()->create([
             'name' => $data->name,
             'email' => $data->email,
             'password' => $data->password,
             'status' => $data->status,
-            'role' => $data->role,
         ]);
+
+        $user->tenants()->attach($tenantId, ['role' => $data->role]);
+
+        return $user->load('tenants');
     }
 
     public function findMemberById(int $tenantId, int $userId): ?User
     {
         return User::query()
-            ->where('tenant_id', $tenantId)
+            ->whereHas('tenants', function ($query) use ($tenantId) {
+                $query->where('tenant_id', $tenantId);
+            })
             ->whereKey($userId)
             ->first();
     }
 
     public function listMembers(int $tenantId): Collection
     {
-        return User::query()
-            ->where('tenant_id', $tenantId)
-            ->orderBy('id')
+        return Tenant::query()
+            ->whereKey($tenantId)
+            ->first()
+            ->users()
+            ->orderBy('users.id')
             ->get();
     }
 
     public function assignMemberRole(int $tenantId, int $userId, UserRole $role): ?User
     {
-        $member = $this->findMemberById($tenantId, $userId);
+        $user = $this->findMemberById($tenantId, $userId);
 
-        if ($member === null) {
+        if ($user === null) {
             return null;
         }
 
-        $member->update([
-            'role' => $role,
-        ]);
+        $user->tenants()->updateExistingPivot($tenantId, ['role' => $role]);
 
-        return $member->refresh();
+        return $user->load('tenants');
     }
 
     private function generateUniqueSlug(string $name): string

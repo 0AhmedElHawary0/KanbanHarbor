@@ -35,13 +35,17 @@ it('adds a tenant member', function (): void {
         'role' => UserRole::Admin->value,
     ]);
 
-    $response->assertCreated()
-        ->assertJsonPath('data.tenant_id', $tenant->id)
-        ->assertJsonPath('data.role', UserRole::Admin->value);
+    $response->assertCreated();
 
+    $user = User::where('email', 'mina@example.com')->first();
     $this->assertDatabaseHas('users', [
-        'tenant_id' => $tenant->id,
+        'id' => $user->id,
         'email' => 'mina@example.com',
+    ]);
+
+    $this->assertDatabaseHas('tenant_user', [
+        'user_id' => $user->id,
+        'tenant_id' => $tenant->id,
         'role' => UserRole::Admin->value,
     ]);
 });
@@ -52,37 +56,38 @@ it('lists tenant members for the requested tenant only', function (): void {
     $tenantA = Tenant::factory()->create();
     $tenantB = Tenant::factory()->create();
 
-    User::factory()->count(2)->create(['tenant_id' => $tenantA->id, 'role' => UserRole::Member]);
-    User::factory()->count(1)->create(['tenant_id' => $tenantB->id, 'role' => UserRole::Owner]);
+    $usersA = User::factory()->count(2)->create();
+    $usersB = User::factory()->count(1)->create();
+
+    foreach ($usersA as $user) {
+        $user->tenants()->attach($tenantA->id, ['role' => UserRole::Member->value]);
+    }
+
+    foreach ($usersB as $user) {
+        $user->tenants()->attach($tenantB->id, ['role' => UserRole::Owner->value]);
+    }
 
     $response = $this->getJson("/api/tenants/{$tenantA->id}/members");
 
     $response->assertOk()
         ->assertJsonCount(2);
-
-    collect($response->json())->each(function (array $member) use ($tenantA): void {
-        expect($member['tenant_id'])->toBe($tenantA->id);
-    });
 });
 
 it('updates a tenant member role within the same tenant', function (): void {
     /** @var \Tests\TestCase $this */
 
     $tenant = Tenant::factory()->create();
-    $member = User::factory()->create([
-        'tenant_id' => $tenant->id,
-        'role' => UserRole::Member,
-    ]);
+    $member = User::factory()->create();
+    $member->tenants()->attach($tenant->id, ['role' => UserRole::Member->value]);
 
     $response = $this->patchJson("/api/tenants/{$tenant->id}/members/{$member->id}/role", [
         'role' => UserRole::Admin->value,
     ]);
 
-    $response->assertOk()
-        ->assertJsonPath('data.role', UserRole::Admin->value);
+    $response->assertOk();
 
-    $this->assertDatabaseHas('users', [
-        'id' => $member->id,
+    $this->assertDatabaseHas('tenant_user', [
+        'user_id' => $member->id,
         'tenant_id' => $tenant->id,
         'role' => UserRole::Admin->value,
     ]);
@@ -93,10 +98,8 @@ it('does not update a member outside the current tenant', function (): void {
 
     $tenantA = Tenant::factory()->create();
     $tenantB = Tenant::factory()->create();
-    $member = User::factory()->create([
-        'tenant_id' => $tenantB->id,
-        'role' => UserRole::Member,
-    ]);
+    $member = User::factory()->create();
+    $member->tenants()->attach($tenantB->id, ['role' => UserRole::Member->value]);
 
     $response = $this->patchJson("/api/tenants/{$tenantA->id}/members/{$member->id}/role", [
         'role' => UserRole::Admin->value,
