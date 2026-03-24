@@ -27,9 +27,11 @@ use Application\Tenant\Queries\GetTenantByIdQuery;
 use Application\Tenant\Queries\GetTenantMemberByIdQuery;
 use Application\Tenant\Queries\ListTenantMembersQuery;
 use Application\User\CommandHandlers\LoginUserCommandHandler;
+use Application\User\CommandHandlers\LogoutUserCommandHandler;
 use Application\User\CommandHandlers\RegisterUserCommandHandler;
 use Application\User\CommandHandlers\UpdateUserCommandHandler;
 use Application\User\Commands\LoginUserCommand;
+use Application\User\Commands\LogoutUserCommand;
 use Application\User\Commands\RegisterUserCommand;
 use Application\User\Commands\UpdateUserCommand;
 use Application\User\QueryHandlers\GetUserByEmailQueryHandler;
@@ -86,6 +88,7 @@ class ApplicationServiceProvider extends ServiceProvider
             RegisterUserCommand::class => RegisterUserCommandHandler::class,
             UpdateUserCommand::class => UpdateUserCommandHandler::class,
             LoginUserCommand::class => LoginUserCommandHandler::class,
+            LogoutUserCommand::class => LogoutUserCommandHandler::class,
         ]);
     }
 

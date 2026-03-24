@@ -24,4 +24,10 @@ interface UserRepositoryContract
     public function findByEmailForAuth(string $email): ?User;
 
     public function createApiToken(User $user, string $deviceName): string;
+
+    public function findByIdForAuth(int $userId): ?User;
+
+    public function revokeCurrentToken(User $user, ?int $tokenId): bool;
+
+    public function revokeAllTokens(User $user): int;
 }

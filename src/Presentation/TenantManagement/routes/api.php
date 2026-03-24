@@ -9,13 +9,13 @@ use Presentation\Tenancy\Middlewares\ResolveTenant;
 
 Route::post('tenants', [TenantController::class, 'store']);
 
-Route::middleware(ResolveTenant::class)->controller(TenantController::class)->group(function (): void {
+Route::middleware([ResolveTenant::class, 'auth:sanctum'])->controller(TenantController::class)->group(function (): void {
     Route::post('tenants/{tenantId}/members', 'storeMember');
     Route::patch('tenants/{tenantId}/members/{userId}/role', 'updateMemberRole');
     Route::get('tenants/{tenantId}/members', 'members');
 });
 
-Route::middleware(ResolveTenant::class)->controller(ProjectController::class)->group(function (): void {
+Route::middleware([ResolveTenant::class, 'auth:sanctum'])->controller(ProjectController::class)->group(function (): void {
     Route::post('tenants/{tenantId}/projects', 'store');
     Route::get('tenants/{tenantId}/projects', 'index');
     Route::get('tenants/{tenantId}/projects/{projectId}', 'show');

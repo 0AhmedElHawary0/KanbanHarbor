@@ -6,12 +6,14 @@ namespace Presentation\UserManagement\Controllers;
 
 use Application\Bus\Contracts\CommandBusContract;
 use Application\User\Commands\LoginUserCommand;
+use Application\User\Commands\LogoutUserCommand;
 use Application\User\Commands\RegisterUserCommand;
 use Application\User\Data\UserData;
 use Domain\User\Enums\UserStatus;
 use Illuminate\Http\JsonResponse;
 use Presentation\UserManagement\Requests\RegisterUserRequest;
 use Presentation\UserManagement\Requests\LoginUserRequest;
+use Presentation\UserManagement\Requests\LogoutUserRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 final class AuthController
@@ -50,6 +52,26 @@ final class AuthController
 
         return response()->json([
             'message' => 'Login Successful',
+            'data' => $result,
+        ], Response::HTTP_OK);
+    }
+
+    public function logout(LogoutUserRequest $request): JsonResponse
+    {
+        $user = $request->user();
+
+        abort_if($user === null, Response::HTTP_UNAUTHORIZED);
+
+        $result = $this->commandBus->dispatch(
+            new LogoutUserCommand(
+                user_id: (int) $user->id,
+                current_token_id: $user->currentAccessToken()?->id,
+                all_devices: (bool) $request->boolean('all_devices')
+            ),
+        );
+
+        return response()->json([
+            'message' => 'Logout successful',
             'data' => $result,
         ], Response::HTTP_OK);
     }

@@ -19,6 +19,7 @@ final class UserRepository implements UserRepositoryContract
         return RegisteredUserData::from($user);
     }
 
+
     public function findByEmail(string $email, int $tenantId): ?User
     {
         $user = User::query()
@@ -28,6 +29,7 @@ final class UserRepository implements UserRepositoryContract
 
         return $user ?? null;
     }
+
 
     public function findById(int $id, int $tenantId): ?User
     {
@@ -39,12 +41,14 @@ final class UserRepository implements UserRepositoryContract
         return $user ?? null;
     }
 
+
     public function getAllUsers(int $tenantId): Collection
     {
         return User::query()
             ->where('tenant_id', $tenantId)
             ->get();
     }
+
 
     public function update(int $id, UserData $data, int $tenantId): bool
     {
@@ -63,8 +67,29 @@ final class UserRepository implements UserRepositoryContract
             ->first();
     }
 
+
     public function createApiToken(User $user, string $deviceName): string
     {
         return $user->createToken($deviceName)->plainTextToken;
+    }
+
+
+    public function findByIdForAuth(int $userId): ?User
+    {
+        return User::query()->find($userId);
+    }
+
+    public function revokeCurrentToken(User $user, ?int $tokenId): bool
+    {
+        if ($tokenId == null) {
+            return false;
+        }
+
+        return $user->tokens()->whereKey($tokenId)->delete() > 0;
+    }
+
+    public function revokeAllTokens(User $user): int
+    {
+        return $user->tokens()->delete();
     }
 }
