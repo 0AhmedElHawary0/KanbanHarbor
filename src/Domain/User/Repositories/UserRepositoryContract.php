@@ -20,4 +20,8 @@ interface UserRepositoryContract
     public function getAllUsers(int $tenantId): Collection;
 
     public function update(int $id, UserData $data, int $tenantId): bool;
+
+    public function findByEmailForAuth(string $email): ?User;
+
+    public function createApiToken(User $user, string $deviceName): string;
 }

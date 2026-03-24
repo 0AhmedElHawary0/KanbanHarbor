@@ -114,4 +114,16 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Registration Defaults
+    |--------------------------------------------------------------------------
+    |
+    | Controls the status assigned to newly registered users. This can be set
+    | to "active", "inactive", or "suspended" based on your onboarding flow.
+    |
+    */
+
+    'registration_default_status' => env('AUTH_REGISTRATION_STATUS', 'active'),
+
 ];

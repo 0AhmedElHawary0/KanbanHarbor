@@ -26,8 +26,10 @@ use Application\Tenant\QueryHandlers\ListTenantMembersQueryHandler;
 use Application\Tenant\Queries\GetTenantByIdQuery;
 use Application\Tenant\Queries\GetTenantMemberByIdQuery;
 use Application\Tenant\Queries\ListTenantMembersQuery;
+use Application\User\CommandHandlers\LoginUserCommandHandler;
 use Application\User\CommandHandlers\RegisterUserCommandHandler;
 use Application\User\CommandHandlers\UpdateUserCommandHandler;
+use Application\User\Commands\LoginUserCommand;
 use Application\User\Commands\RegisterUserCommand;
 use Application\User\Commands\UpdateUserCommand;
 use Application\User\QueryHandlers\GetUserByEmailQueryHandler;
@@ -69,12 +71,21 @@ class ApplicationServiceProvider extends ServiceProvider
     {
         $commandBus = app(CommandBusContract::class);
         $commandBus->register([
+
+            /* Project */
             CreateProjectCommand::class => CreateProjectCommandHandler::class,
+
+
+            /* Tenant */
             CreateTenantCommand::class => CreateTenantCommandHandler::class,
             AddTenantMemberCommand::class => AddTenantMemberCommandHandler::class,
             AssignTenantMemberRoleCommand::class => AssignTenantMemberRoleCommandHandler::class,
+
+
+            /* User */
             RegisterUserCommand::class => RegisterUserCommandHandler::class,
             UpdateUserCommand::class => UpdateUserCommandHandler::class,
+            LoginUserCommand::class => LoginUserCommandHandler::class,
         ]);
     }
 

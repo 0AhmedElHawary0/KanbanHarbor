@@ -32,24 +32,20 @@ final class ProjectController extends Controller
 
         abort_if($tenantId !== $resolvedTenantId, Response::HTTP_BAD_REQUEST);
 
-        $projectId = $this->commandBus->dispatch(
+        $project = $this->commandBus->dispatch(
             new CreateProjectCommand(
                 $resolvedTenantId,
                 CreateProjectData::from($request->validated()),
             ),
         );
 
-        $project = $this->queryBus->ask(new GetProjectByIdQuery($resolvedTenantId, $projectId));
-
-        abort_if($project === null, Response::HTTP_NOT_FOUND);
-
         return response()->json([
-            'data' => ProjectData::from($project),
+            'data' => $project,
         ], Response::HTTP_CREATED);
     }
 
 
-    public function view(int $tenantId): JsonResponse
+    public function index(int $tenantId): JsonResponse
     {
         $resolvedTenantId = $this->tenantContext->tenantId();
 

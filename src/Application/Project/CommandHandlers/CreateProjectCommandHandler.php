@@ -6,14 +6,17 @@ namespace Application\Project\CommandHandlers;
 
 use Application\Bus\CommandHandler;
 use Application\Project\Commands\CreateProjectCommand;
+use Application\Project\Data\ProjectData;
 use Domain\Project\Repositories\ProjectRepositoryContract;
 
 final class CreateProjectCommandHandler extends CommandHandler
 {
     public function __construct(private readonly ProjectRepositoryContract $projectRepository) {}
 
-    public function handle(CreateProjectCommand $command): int
+    public function handle(CreateProjectCommand $command): ProjectData
     {
-        return $this->projectRepository->create($command->tenantId, $command->projectData)->id;
+        $project = $this->projectRepository->create($command->tenantId, $command->projectData);
+
+        return ProjectData::from($project);
     }
 }

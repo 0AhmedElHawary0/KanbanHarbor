@@ -54,4 +54,17 @@ final class UserRepository implements UserRepositoryContract
 
         return $user->update($data->all());
     }
+
+
+    public function findByEmailForAuth(string $email): ?User
+    {
+        return User::query()
+            ->where('email', $email)
+            ->first();
+    }
+
+    public function createApiToken(User $user, string $deviceName): string
+    {
+        return $user->createToken($deviceName)->plainTextToken;
+    }
 }
