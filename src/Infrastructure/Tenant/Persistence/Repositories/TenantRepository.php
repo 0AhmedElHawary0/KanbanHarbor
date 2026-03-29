@@ -37,7 +37,9 @@ final class TenantRepository implements TenantRepositoryContract
             'status' => $data->status,
         ]);
 
-        $user->tenants()->attach($tenantId, ['role' => $data->role]);
+        $user->tenants()->attach($tenantId, ['role' => $data->role->value]);
+
+        $this->syncTenantScopedRole($user, $tenantId, $data->role);
 
         return $user->load('tenants');
     }
@@ -70,9 +72,23 @@ final class TenantRepository implements TenantRepositoryContract
             return null;
         }
 
-        $user->tenants()->updateExistingPivot($tenantId, ['role' => $role]);
+        $user->tenants()->updateExistingPivot($tenantId, ['role' => $role->value]);
+
+        $this->syncTenantScopedRole($user, $tenantId, $role);
 
         return $user->load('tenants');
+    }
+
+
+    private function syncTenantScopedRole(User $user, int $tenantId, UserRole $role): void
+    {
+        setPermissionsTeamId($tenantId);
+
+        try {
+            $user->syncRoles([$role->value]);
+        } finally {
+            setPermissionsTeamId(null);
+        }
     }
 
     private function generateUniqueSlug(string $name): string
