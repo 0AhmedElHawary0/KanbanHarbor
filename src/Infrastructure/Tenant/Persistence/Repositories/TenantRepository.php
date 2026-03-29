@@ -15,12 +15,26 @@ use Illuminate\Support\Str;
 
 final class TenantRepository implements TenantRepositoryContract
 {
-    public function create(CreateTenantData $data): Tenant
+    public function create(CreateTenantData $data, int $ownerId): Tenant
     {
-        return Tenant::query()->create([
+        $tenant =  Tenant::query()->create([
             'name' => $data->name,
             'slug' => $this->generateUniqueSlug($data->name),
         ]);
+
+        $owner = User::query()->find($ownerId);
+
+        if ($owner == null) {
+            throw new \RuntimeException('Owner user not found.');
+        }
+
+        $owner->tenants()->syncWithoutDetaching([
+            (int) $tenant->id => ['role' => UserRole::Owner->value],
+        ]);
+
+        $this->syncTenantScopedRole($owner, (int) $tenant->id, UserRole::Owner);
+
+        return $tenant;
     }
 
     public function findById(int $tenantId): ?Tenant

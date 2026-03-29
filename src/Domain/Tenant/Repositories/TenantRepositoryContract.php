@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface TenantRepositoryContract
 {
-    public function create(CreateTenantData $data): Tenant;
+    public function create(CreateTenantData $data, int $ownerId): Tenant;
 
     public function findById(int $tenantId): ?Tenant;
 

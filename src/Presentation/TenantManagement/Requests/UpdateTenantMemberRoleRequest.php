@@ -12,7 +12,11 @@ final class UpdateTenantMemberRoleRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        $user = $this->user();
+        if ($user === null) {
+            return false;
+        }
+        return $user->can('member.role.update');
     }
 
     public function rules(): array

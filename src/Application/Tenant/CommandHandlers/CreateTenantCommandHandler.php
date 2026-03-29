@@ -14,6 +14,6 @@ final class CreateTenantCommandHandler extends CommandHandler
 
     public function handle(CreateTenantCommand $command): int
     {
-        return $this->tenantRepository->create($command->tenantData)->id;
+        return $this->tenantRepository->create($command->tenantData, $command->ownerId)->id;
     }
 }

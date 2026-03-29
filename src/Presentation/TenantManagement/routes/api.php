@@ -7,7 +7,7 @@ use Presentation\TenantManagement\Controllers\ProjectController;
 use Presentation\TenantManagement\Controllers\TenantController;
 use Presentation\Tenancy\Middlewares\ResolveTenant;
 
-Route::post('tenants', [TenantController::class, 'store']);
+Route::middleware(['auth:sanctum'])->post('tenants', [TenantController::class, 'store']);
 
 Route::middleware([ResolveTenant::class, 'auth:sanctum'])->controller(TenantController::class)->group(function (): void {
     Route::post('tenants/{tenantId}/members', 'storeMember')->middleware('permission:member.invite');

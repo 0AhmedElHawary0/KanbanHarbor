@@ -11,5 +11,6 @@ final class CreateTenantCommand extends Command
 {
     public function __construct(
         public CreateTenantData $tenantData,
+        public int $ownerId,
     ) {}
 }

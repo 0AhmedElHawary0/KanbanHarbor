@@ -34,8 +34,15 @@ final class TenantController extends Controller
 
     public function store(CreateTenantRequest $request): JsonResponse
     {
+        $user = $request->user();
+
+        abort_if($user === null, Response::HTTP_UNAUTHORIZED);
+
         $tenantId = $this->commandBus->dispatch(
-            new CreateTenantCommand(CreateTenantData::from($request->validated())),
+            new CreateTenantCommand(
+                CreateTenantData::from($request->validated()),
+                (int) $user->id
+            ),
         );
 
         $tenant = $this->queryBus->ask(new GetTenantByIdQuery($tenantId));
