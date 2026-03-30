@@ -16,6 +16,7 @@ declare(strict_types=1);
 uses(
     Tests\TestCase::class,
     Illuminate\Foundation\Testing\RefreshDatabase::class,
+    Illuminate\Foundation\Testing\WithFaker::class,
 )->in('Feature');
 
 /*
@@ -46,3 +47,7 @@ function something(): void
 {
     // ..
 }
+beforeEach(function (): void {
+    setPermissionsTeamId(null);
+    \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => \Database\Seeders\RolePermissionSeeder::class]);
+})->in('Feature');

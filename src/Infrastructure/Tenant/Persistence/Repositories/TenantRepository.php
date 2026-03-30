@@ -12,6 +12,7 @@ use Domain\User\Entities\User;
 use Domain\User\Enums\UserRole;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 final class TenantRepository implements TenantRepositoryContract
 {
@@ -99,6 +100,11 @@ final class TenantRepository implements TenantRepositoryContract
         setPermissionsTeamId($tenantId);
 
         try {
+            Role::query()->firstOrCreate([
+                'name' => $role->value,
+                'guard_name' => 'web',
+                (string) config('permission.column_names.team_foreign_key', 'team_id') => $tenantId,
+            ]);
             $user->syncRoles([$role->value]);
         } finally {
             setPermissionsTeamId(null);
