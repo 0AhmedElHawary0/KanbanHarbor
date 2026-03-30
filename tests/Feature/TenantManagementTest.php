@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Domain\Tenant\Entities\Tenant;
 use Domain\User\Entities\User;
 use Domain\User\Enums\UserRole;
-use Domain\User\Enums\UserStatus;
 use Spatie\Permission\Models\Permission;
 
 function tenantActor(\Tests\TestCase $test, Tenant $tenant, string $permission): User
@@ -60,27 +59,21 @@ it('adds a tenant member', function (): void {
 
     $tenant = Tenant::factory()->create();
     tenantActor($this, $tenant, 'member.invite');
+    $invitedUser = User::factory()->create([
+        'email' => 'mina@example.com',
+    ]);
 
     $response = $this
         ->withHeader('X-Tenant-Id', (string) $tenant->id)
         ->postJson("/api/tenants/{$tenant->id}/members", [
-            'name' => 'Mina Ashraf',
             'email' => 'mina@example.com',
-            'password' => 'secret123',
-            'status' => UserStatus::Active->value,
             'role' => UserRole::Admin->value,
         ]);
 
     $response->assertCreated();
 
-    $user = User::where('email', 'mina@example.com')->first();
-    $this->assertDatabaseHas('users', [
-        'id' => $user->id,
-        'email' => 'mina@example.com',
-    ]);
-
     $this->assertDatabaseHas('tenant_user', [
-        'user_id' => $user->id,
+        'user_id' => $invitedUser->id,
         'tenant_id' => $tenant->id,
         'role' => UserRole::Admin->value,
     ]);

@@ -45,14 +45,21 @@ final class TenantRepository implements TenantRepositoryContract
 
     public function addMember(int $tenantId, TenantMemberCreateData $data): User
     {
-        $user = User::query()->create([
-            'name' => $data->name,
-            'email' => $data->email,
-            'password' => $data->password,
-            'status' => $data->status,
-        ]);
+        $user = User::query()->where('email', $data->email)->first();
 
-        $user->tenants()->attach($tenantId, ['role' => $data->role->value]);
+        if ($user === null) {
+            throw new \RuntimeException('Invited user was not found.');
+        }
+
+        $isExistingMember = $user->tenants()
+            ->where('tenant_id', $tenantId)
+            ->exists();
+
+        if ($isExistingMember) {
+            $user->tenants()->updateExistingPivot($tenantId, ['role' => $data->role->value]);
+        } else {
+            $user->tenants()->attach($tenantId, ['role' => $data->role->value]);
+        }
 
         $this->syncTenantScopedRole($user, $tenantId, $data->role);
 
