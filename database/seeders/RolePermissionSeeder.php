@@ -28,6 +28,7 @@ class RolePermissionSeeder extends Seeder
             'project.create',
             'project.update',
             'project.delete',
+            'project.archive',
         ];
 
         // Create permissions if the don't exist yet
@@ -53,6 +54,7 @@ class RolePermissionSeeder extends Seeder
             'project.view',
             'project.create',
             'project.update',
+            'project.archive',
         ]);
 
         //Member

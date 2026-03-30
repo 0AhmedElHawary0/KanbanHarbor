@@ -19,4 +19,5 @@ Route::middleware([ResolveTenant::class, 'auth:sanctum'])->controller(ProjectCon
     Route::post('tenants/{tenantId}/projects', 'store')->middleware('permission:project.create');
     Route::get('tenants/{tenantId}/projects', 'index')->middleware('permission:project.view');
     Route::get('tenants/{tenantId}/projects/{projectId}', 'show')->middleware('permission:project.view');
+    Route::patch('tenants/{tenantId}/projects/{projectId}', 'archive')->middleware('permission:project.archive');
 });

@@ -9,6 +9,7 @@ use Domain\Project\Entities\Project;
 use Domain\Project\Enums\ProjectStatus;
 use Domain\Project\Repositories\ProjectRepositoryContract;
 use Illuminate\Database\Eloquent\Collection;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class ProjectRepository implements ProjectRepositoryContract
 {
@@ -36,5 +37,20 @@ final class ProjectRepository implements ProjectRepositoryContract
             ->where('tenant_id', $tenantId)
             ->orderBy('id')
             ->get();
+    }
+
+
+    public function archive(int $tenantId, int $projectId): JsonResponse
+    {
+        $project = $this->findById($tenantId, $projectId);
+
+        if (project === null) {
+            return null;
+        }
+
+        $project->status = ProjectStatus::Archived;
+        $project->save();
+
+        return $project->refresh();
     }
 }

@@ -9,7 +9,9 @@ use Application\Bus\Contracts\QueryBusContract;
 use Application\Bus\IlluminateCommandBus;
 use Application\Bus\IlluminateQueryBus;
 use Application\Project\CommandHandlers\CreateProjectCommandHandler;
+use Application\Project\CommandHandlers\ArchiveProjectCommandHandler;
 use Application\Project\Commands\CreateProjectCommand;
+use Application\Project\Commands\ArchiveProjectCommand;
 use Application\Project\QueryHandlers\GetProjectByIdQueryHandler;
 use Application\Project\QueryHandlers\ListTenantProjectsQueryHandler;
 use Application\Project\Queries\GetProjectByIdQuery;
@@ -76,6 +78,7 @@ class ApplicationServiceProvider extends ServiceProvider
 
             /* Project */
             CreateProjectCommand::class => CreateProjectCommandHandler::class,
+            ArchiveProjectCommand::class => ArchiveProjectCommandHandler::class,
 
 
             /* Tenant */

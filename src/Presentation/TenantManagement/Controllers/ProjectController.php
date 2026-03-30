@@ -11,11 +11,13 @@ use Application\Project\Data\CreateProjectData;
 use Application\Project\Data\ProjectData;
 use Application\Project\Queries\GetProjectByIdQuery;
 use Application\Project\Queries\ListTenantProjectsQuery;
+use Aws\Api\ErrorParser\JsonRpcErrorParser;
 use Illuminate\Http\JsonResponse;
 use Presentation\Controller;
 use Presentation\TenantManagement\Requests\CreateProjectRequest;
 use Shared\Tenancy\TenantContext;
 use Symfony\Component\HttpFoundation\Response;
+use Application\Project\Commands\ArchiveProjectCommand;
 
 final class ProjectController extends Controller
 {
@@ -71,6 +73,24 @@ final class ProjectController extends Controller
 
         return response()->json([
             'data' => ProjectData::from($project),
+        ], Response::HTTP_OK);
+    }
+
+
+    public function archive(int $tenantId, int $projectId): JsonResponse
+    {
+        $resolvedTenantId = $this->tenantContext->tenantId();
+
+        abort_if($tenantId !== $resolvedTenantId, Response::HTTP_BAD_REQUEST);
+
+        $project = $this->commandBus->dispatch(
+            new ArchiveProjectCommand($resolvedTenantId, $projectId),
+        );
+
+        abort_if($project === null, Response::HTTP_BAD_REQUEST);
+
+        return response()->json([
+            'data' => $project,
         ], Response::HTTP_OK);
     }
 }
