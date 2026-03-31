@@ -36,32 +36,36 @@ class RolePermissionSeeder extends Seeder
             Permission::findOrCreate($permission, 'web');
         }
 
-        // Create roles if they don't exist yet
-        $owner = Role::findOrCreate('owner', 'web');
-        $admin = Role::findOrCreate('admin', 'web');
-        $member = Role::findOrCreate('member', 'web');
+        $rolePermissions = [
+            'owner' => $permissions,
+            'admin' => [
+                'tenant.view',
+                'tenant.update',
+                'member.view',
+                'member.invite',
+                'member.role.update',
+                'project.view',
+                'project.create',
+                'project.update',
+                'project.archive',
+            ],
+            'member' => [
+                'tenant.view',
+                'member.view',
+                'project.view',
+            ],
+        ];
 
-        // Owner has all permissions
-        $owner->syncPermissions($permissions);
+        foreach ($rolePermissions as $roleName => $assignedPermissions) {
+            $roles = Role::query()->where('name', $roleName)->get();
 
-        // Admin
-        $admin->syncPermissions([
-            'tenant.view',
-            'tenant.update',
-            'member.view',
-            'member.invite',
-            'member.role.update',
-            'project.view',
-            'project.create',
-            'project.update',
-            'project.archive',
-        ]);
+            if ($roles->isEmpty()) {
+                $roles = collect([Role::findOrCreate($roleName, 'web')]);
+            }
 
-        //Member
-        $member->syncPermissions([
-            'tenant.view',
-            'member.view',
-            'project.view',
-        ]);
+            $roles->each(function (Role $role) use ($assignedPermissions): void {
+                $role->syncPermissions($assignedPermissions);
+            });
+        }
     }
 }

@@ -12,7 +12,9 @@ use Domain\User\Entities\User;
 use Domain\User\Enums\UserRole;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 final class TenantRepository implements TenantRepositoryContract
 {
@@ -107,15 +109,59 @@ final class TenantRepository implements TenantRepositoryContract
         setPermissionsTeamId($tenantId);
 
         try {
-            Role::query()->firstOrCreate([
+            app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+            $tenantRole = Role::query()->firstOrCreate([
                 'name' => $role->value,
                 'guard_name' => 'web',
                 (string) config('permission.column_names.team_foreign_key', 'team_id') => $tenantId,
             ]);
-            $user->syncRoles([$role->value]);
+
+            $permissions = collect($this->permissionNamesForRole($role))
+                ->map(fn(string $permissionName) => Permission::findOrCreate($permissionName, 'web'));
+
+            $tenantRole->syncPermissions($permissions);
+            $user->syncRoles([$tenantRole]);
         } finally {
             setPermissionsTeamId(null);
         }
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function permissionNamesForRole(UserRole $role): array
+    {
+        return match ($role) {
+            UserRole::Owner => [
+                'tenant.view',
+                'tenant.update',
+                'member.view',
+                'member.invite',
+                'member.role.update',
+                'project.view',
+                'project.create',
+                'project.update',
+                'project.delete',
+                'project.archive',
+            ],
+            UserRole::Admin => [
+                'tenant.view',
+                'tenant.update',
+                'member.view',
+                'member.invite',
+                'member.role.update',
+                'project.view',
+                'project.create',
+                'project.update',
+                'project.archive',
+            ],
+            UserRole::Member => [
+                'tenant.view',
+                'member.view',
+                'project.view',
+            ],
+        };
     }
 
     private function generateUniqueSlug(string $name): string
