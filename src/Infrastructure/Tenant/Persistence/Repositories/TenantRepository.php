@@ -71,6 +71,9 @@ final class TenantRepository implements TenantRepositoryContract
     public function findMemberById(int $tenantId, int $userId): ?User
     {
         return User::query()
+            ->with([
+                'tenants' => fn($query) => $query->where('tenant_id', $tenantId),
+            ])
             ->whereHas('tenants', function ($query) use ($tenantId) {
                 $query->where('tenant_id', $tenantId);
             })

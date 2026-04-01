@@ -103,7 +103,15 @@ it('lists tenant members for the requested tenant only', function (): void {
         ->getJson("/api/tenants/{$tenantA->id}/members");
 
     $response->assertOk()
-        ->assertJsonCount(3);
+        ->assertJsonCount(3)
+        ->assertJsonFragment([
+            'email' => $usersA[0]->email,
+            'role' => UserRole::Member->value,
+        ])
+        ->assertJsonFragment([
+            'email' => $usersA[1]->email,
+            'role' => UserRole::Member->value,
+        ]);
 });
 
 it('updates a tenant member role within the same tenant', function (): void {

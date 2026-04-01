@@ -84,7 +84,12 @@ final class TenantController extends Controller
 
         $members = $this->queryBus->ask(new ListTenantMembersQuery($resolvedTenantId));
 
-        return response()->json(TenantMemberData::collect($members));
+        return response()->json(
+            $members
+                ->map(fn($member) => TenantMemberData::fromModel($member)->toArray())
+                ->values()
+                ->all()
+        );
     }
 
     public function updateMemberRole(int $tenantId, int $userId, UpdateTenantMemberRoleRequest $request): JsonResponse
