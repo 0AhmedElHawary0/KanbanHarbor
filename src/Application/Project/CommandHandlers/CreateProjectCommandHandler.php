@@ -15,7 +15,7 @@ final class CreateProjectCommandHandler extends CommandHandler
 
     public function handle(CreateProjectCommand $command): ProjectData
     {
-        $project = $this->projectRepository->create($command->tenantId, $command->projectData);
+        $project = $this->projectRepository->store($command->tenantId, $command->projectData);
 
         return ProjectData::from($project);
     }

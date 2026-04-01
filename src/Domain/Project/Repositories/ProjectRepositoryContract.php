@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 interface ProjectRepositoryContract
 {
-    public function create(int $tenantId, CreateProjectData $data): Project;
+    public function store(int $tenantId, CreateProjectData $data): Project;
 
     public function findById(int $tenantId, int $projectId): ?Project;
 

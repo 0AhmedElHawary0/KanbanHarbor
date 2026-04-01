@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class ProjectRepository implements ProjectRepositoryContract
 {
-    public function create(int $tenantId, CreateProjectData $data): Project
+    public function store(int $tenantId, CreateProjectData $data): Project
     {
         return Project::query()->create([
             'tenant_id' => $tenantId,
@@ -40,11 +40,11 @@ final class ProjectRepository implements ProjectRepositoryContract
     }
 
 
-    public function archive(int $tenantId, int $projectId): JsonResponse
+    public function archive(int $tenantId, int $projectId): ?Project
     {
         $project = $this->findById($tenantId, $projectId);
 
-        if (project === null) {
+        if ($project === null) {
             return null;
         }
 
