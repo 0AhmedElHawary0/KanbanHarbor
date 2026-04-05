@@ -29,6 +29,10 @@ class RolePermissionSeeder extends Seeder
             'project.update',
             'project.delete',
             'project.archive',
+            'sprint.create',
+            'sprint.view',
+            'sprint.delete',
+            'sprint.update',
         ];
 
         // Create permissions if the don't exist yet
@@ -48,6 +52,11 @@ class RolePermissionSeeder extends Seeder
                 'project.create',
                 'project.update',
                 'project.archive',
+                'sprint.create',
+                'sprint.view',
+                'sprint.update',
+
+
             ],
             'member' => [
                 'tenant.view',

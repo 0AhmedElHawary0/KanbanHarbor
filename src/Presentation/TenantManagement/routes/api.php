@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Presentation\TenantManagement\Controllers\ProjectController;
+use Presentation\TenantManagement\Controllers\SprintController;
 use Presentation\TenantManagement\Controllers\TenantController;
 use Presentation\Tenancy\Middlewares\ResolveTenant;
 
@@ -20,4 +21,8 @@ Route::middleware([ResolveTenant::class, 'auth:sanctum'])->controller(ProjectCon
     Route::get('tenants/{tenantId}/projects', 'index')->middleware('permission:project.view');
     Route::get('tenants/{tenantId}/projects/{projectId}', 'show')->middleware('permission:project.view');
     Route::patch('tenants/{tenantId}/projects/{projectId}', 'archive')->middleware('permission:project.archive');
+});
+
+Route::middleware([ResolveTenant::class, 'auth:sanctum'])->controller(SprintController::class)->group(function (): void {
+    Route::post('tenants/{tenantId}/projects/{projectId}/sprints', 'store')->middleware('permission:sprint.create');
 });
