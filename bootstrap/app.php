@@ -83,19 +83,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 return null;
             }
 
-            // If user is not authenticated on a protected route, return 401
-            if ($request->user() === null && $request->bearerToken() !== null) {
-                return response()->json([
-                    'message' => 'Invalid or expired token.',
-                ], Response::HTTP_UNAUTHORIZED);
-            }
-
-            if ($request->user() === null && $request->bearerToken() === null) {
-                return response()->json([
-                    'message' => 'Unauthenticated.',
-                ], Response::HTTP_UNAUTHORIZED);
-            }
-
             $status = $exception instanceof HttpExceptionInterface
                 ? $exception->getStatusCode()
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
