@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Domain\Sprint\Entities;
 
+use Domain\Project\Entities\Project;
 use Domain\Sprint\Enums\SprintStatus;
 use Domain\Sprint\Factories\SprintFactory;
 use Domain\Tenant\Entities\Tenant;
@@ -40,5 +41,10 @@ class Sprint extends Model
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
+    }
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
     }
 }

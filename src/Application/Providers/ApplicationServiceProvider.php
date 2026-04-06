@@ -11,6 +11,7 @@ use Application\Bus\IlluminateQueryBus;
 use Application\Project\CommandHandlers\CreateProjectCommandHandler;
 use Application\Project\CommandHandlers\ArchiveProjectCommandHandler;
 use Application\Sprint\CommandHandlers\StoreSprintCommandHandler;
+use Application\Sprint\QueryHandlers\ListProjectSprintsQueryHandler;
 use Application\Project\Commands\CreateProjectCommand;
 use Application\Project\Commands\ArchiveProjectCommand;
 use Application\Project\QueryHandlers\GetProjectByIdQueryHandler;
@@ -18,6 +19,7 @@ use Application\Project\QueryHandlers\ListTenantProjectsQueryHandler;
 use Application\Project\Queries\GetProjectByIdQuery;
 use Application\Project\Queries\ListTenantProjectsQuery;
 use Application\Sprint\Commands\StoreSprintCommand;
+use Application\Sprint\Queries\ListProjectSprintsQuery;
 use Application\Tenant\CommandHandlers\AddTenantMemberCommandHandler;
 use Application\Tenant\CommandHandlers\AssignTenantMemberRoleCommandHandler;
 use Application\Tenant\CommandHandlers\CreateTenantCommandHandler;
@@ -105,6 +107,7 @@ class ApplicationServiceProvider extends ServiceProvider
         $queryBus->register([
             GetProjectByIdQuery::class => GetProjectByIdQueryHandler::class,
             ListTenantProjectsQuery::class => ListTenantProjectsQueryHandler::class,
+            ListProjectSprintsQuery::class => ListProjectSprintsQueryHandler::class,
             GetTenantByIdQuery::class => GetTenantByIdQueryHandler::class,
             GetTenantMemberByIdQuery::class => GetTenantMemberByIdQueryHandler::class,
             ListTenantMembersQuery::class => ListTenantMembersQueryHandler::class,

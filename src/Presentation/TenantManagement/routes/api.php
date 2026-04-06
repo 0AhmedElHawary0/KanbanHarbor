@@ -25,4 +25,5 @@ Route::middleware([ResolveTenant::class, 'auth:sanctum'])->controller(ProjectCon
 
 Route::middleware([ResolveTenant::class, 'auth:sanctum'])->controller(SprintController::class)->group(function (): void {
     Route::post('tenants/{tenantId}/projects/{projectId}/sprints', 'store')->middleware('permission:sprint.create');
+    Route::get('tenants/{tenantId}/projects/{projectId}/sprints', 'index')->middleware('permission:sprint.view');
 });

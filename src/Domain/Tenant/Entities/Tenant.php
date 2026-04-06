@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace Domain\Tenant\Entities;
 
+use Domain\Project\Entities\Project;
+use Domain\Sprint\Entities\Sprint;
 use Domain\Tenant\Factories\TenantFactory;
 use Domain\User\Entities\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Multitenancy\Concerns\UsesMultitenancyConfig;
 use Spatie\Multitenancy\Contracts\IsTenant;
 use Spatie\Multitenancy\Models\Concerns\ImplementsTenant;
+
 
 class Tenant extends Model implements IsTenant
 {
@@ -34,5 +38,15 @@ class Tenant extends Model implements IsTenant
         return $this->belongsToMany(User::class, 'tenant_user')
             ->withPivot('role')
             ->withTimestamps();
+    }
+
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class, 'tenant_id');
+    }
+
+    public function sprints(): HasMany
+    {
+        return $this->hasMany(Sprint::class, 'tenant_id');
     }
 }

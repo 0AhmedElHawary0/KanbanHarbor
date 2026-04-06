@@ -23,4 +23,13 @@ final class SprintRepository implements SprintRepositoryContract
             'status' => SprintStatus::Active,
         ]);
     }
+
+    public function findAllByProjectId(int $projectId, int $tenantId): Collection
+    {
+        return Sprint::query()
+            ->where('project_id', $projectId)
+            ->where('tenant_id', $tenantId)
+            ->orderBy('id')
+            ->get();
+    }
 }
