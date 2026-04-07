@@ -147,6 +147,11 @@ final class TenantRepository implements TenantRepositoryContract
                 'project.update',
                 'project.delete',
                 'project.archive',
+                'sprint.create',
+                'sprint.view',
+                'sprint.delete',
+                'sprint.update',
+                'sprint.archive'
             ],
             UserRole::Admin => [
                 'tenant.view',
@@ -158,6 +163,10 @@ final class TenantRepository implements TenantRepositoryContract
                 'project.create',
                 'project.update',
                 'project.archive',
+                'sprint.create',
+                'sprint.view',
+                'sprint.update',
+                'sprint.archive'
             ],
             UserRole::Member => [
                 'tenant.view',

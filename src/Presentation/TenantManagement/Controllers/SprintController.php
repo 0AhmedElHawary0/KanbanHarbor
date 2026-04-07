@@ -6,7 +6,7 @@ namespace Presentation\TenantManagement\Controllers;
 
 use Application\Bus\Contracts\CommandBusContract;
 use Application\Bus\Contracts\QueryBusContract;
-use Application\Project\Queries\GetProjectByIdQuery;
+use Application\Sprint\Commands\ArchiveSprintCommand;
 use Application\Sprint\Commands\StoreSprintCommand;
 use Application\Sprint\Commands\UpdateSprintCommand;
 use Application\Sprint\Data\SprintData;
@@ -89,6 +89,25 @@ final class SprintController extends Controller
                 StoreSprintData::from($request->validated())
             )
         );
+
+        return response()->json(
+            [
+                'data' => SprintData::from($sprint),
+            ],
+            Response::HTTP_OK
+        );
+    }
+
+    public function archive(int $tenantId, int $projectId, int $sprintId): JsonResponse
+    {
+        $resolvedTenantId = $this->tenantContext->tenantId();
+        abort_if($tenantId !== $resolvedTenantId, Response::HTTP_BAD_REQUEST);
+
+        $sprint = $this->commandBus->dispatch(new ArchiveSprintCommand(
+            $resolvedTenantId,
+            $projectId,
+            $sprintId,
+        ));
 
         return response()->json(
             [

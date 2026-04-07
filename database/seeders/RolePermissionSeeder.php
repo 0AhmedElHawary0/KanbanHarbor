@@ -33,6 +33,7 @@ class RolePermissionSeeder extends Seeder
             'sprint.view',
             'sprint.delete',
             'sprint.update',
+            'sprint.archive'
         ];
 
         // Create permissions if the don't exist yet
@@ -55,6 +56,8 @@ class RolePermissionSeeder extends Seeder
                 'sprint.create',
                 'sprint.view',
                 'sprint.update',
+                'sprint.archive'
+
 
 
             ],

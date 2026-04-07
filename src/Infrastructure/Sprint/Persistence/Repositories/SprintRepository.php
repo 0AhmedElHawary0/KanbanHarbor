@@ -59,4 +59,18 @@ final class SprintRepository implements SprintRepositoryContract
 
         return $sprint->fresh();
     }
+
+    public function archive(int $tenantId, int $projectId, int $sprintId): ?Sprint
+    {
+        $sprint = $this->getSprintById($sprintId, $projectId, $tenantId);
+
+        if ($sprint === null) {
+            return null;
+        }
+
+        $sprint->status = SprintStatus::Archived;
+        $sprint->save();
+
+        return $sprint->refresh();
+    }
 }

@@ -28,4 +28,5 @@ Route::middleware([ResolveTenant::class, 'auth:sanctum'])->controller(SprintCont
     Route::get('tenants/{tenantId}/projects/{projectId}/sprints', 'index')->middleware('permission:sprint.view');
     Route::get('tenants/{tenantId}/projects/{projectId}/sprints/{sprintId}', 'show')->middleware('permission:sprint.view');
     Route::put('tenants/{tenantId}/projects/{projectId}/sprints/{sprintId}', 'update')->middleware('permission:sprint.update');
+    Route::patch('tenants/{tenantId}/projects/{projectId}/sprints/{sprintId}', 'archive')->middleware('permission:sprint-archive');
 });

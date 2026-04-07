@@ -18,7 +18,9 @@ use Application\Project\QueryHandlers\GetProjectByIdQueryHandler;
 use Application\Project\QueryHandlers\ListTenantProjectsQueryHandler;
 use Application\Project\Queries\GetProjectByIdQuery;
 use Application\Project\Queries\ListTenantProjectsQuery;
+use Application\Sprint\CommandHandlers\ArchiveSprintCommandHandler;
 use Application\Sprint\CommandHandlers\UpdateSprintCommandHandler;
+use Application\Sprint\Commands\ArchiveSprintCommand;
 use Application\Sprint\Commands\StoreSprintCommand;
 use Application\Sprint\Commands\UpdateSprintCommand;
 use Application\Sprint\Queries\GetSprintByIdQuery;
@@ -91,6 +93,7 @@ class ApplicationServiceProvider extends ServiceProvider
             /* Sprint */
             StoreSprintCommand::class => StoreSprintCommandHandler::class,
             UpdateSprintCommand::class => UpdateSprintCommandHandler::class,
+            ArchiveSprintCommand::class => ArchiveSprintCommandHandler::class,
 
             /* Tenant */
             CreateTenantCommand::class => CreateTenantCommandHandler::class,
@@ -110,15 +113,23 @@ class ApplicationServiceProvider extends ServiceProvider
     {
         $queryBus = app(QueryBusContract::class);
         $queryBus->register([
+
+            /* Project */
             GetProjectByIdQuery::class => GetProjectByIdQueryHandler::class,
             ListTenantProjectsQuery::class => ListTenantProjectsQueryHandler::class,
             ListProjectSprintsQuery::class => ListProjectSprintsQueryHandler::class,
+
+            /* Tenant */
             GetTenantByIdQuery::class => GetTenantByIdQueryHandler::class,
             GetTenantMemberByIdQuery::class => GetTenantMemberByIdQueryHandler::class,
             ListTenantMembersQuery::class => ListTenantMembersQueryHandler::class,
+
+            /* User */
             GetUserByEmailQuery::class => GetUserByEmailQueryHandler::class,
             GetUserByIdQuery::class => GetUserByIdQueryHandler::class,
             ListUsersQuery::class => ListUsersQueryHandler::class,
+
+            /* Spint */
             GetSprintByIdQuery::class => GetSprintByIdQueryHandler::class,
         ]);
     }

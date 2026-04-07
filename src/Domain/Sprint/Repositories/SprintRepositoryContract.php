@@ -17,4 +17,6 @@ interface SprintRepositoryContract
     public function getSprintById(int $sprintId, int $projectId, int $tenantId): ?Sprint;
 
     public function update(int $tenantId, int $projectId, int $sprintId, StoreSprintData $data): ?Sprint;
+
+    public function archive(int $tenantId, int $projectId, int $sprintId): ?Sprint;
 }
