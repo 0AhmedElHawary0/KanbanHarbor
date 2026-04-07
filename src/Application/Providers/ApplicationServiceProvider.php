@@ -18,8 +18,12 @@ use Application\Project\QueryHandlers\GetProjectByIdQueryHandler;
 use Application\Project\QueryHandlers\ListTenantProjectsQueryHandler;
 use Application\Project\Queries\GetProjectByIdQuery;
 use Application\Project\Queries\ListTenantProjectsQuery;
+use Application\Sprint\CommandHandlers\UpdateSprintCommandHandler;
 use Application\Sprint\Commands\StoreSprintCommand;
+use Application\Sprint\Commands\UpdateSprintCommand;
+use Application\Sprint\Queries\GetSprintByIdQuery;
 use Application\Sprint\Queries\ListProjectSprintsQuery;
+use Application\Sprint\QueryHandlers\GetSprintByIdQueryHandler;
 use Application\Tenant\CommandHandlers\AddTenantMemberCommandHandler;
 use Application\Tenant\CommandHandlers\AssignTenantMemberRoleCommandHandler;
 use Application\Tenant\CommandHandlers\CreateTenantCommandHandler;
@@ -86,6 +90,7 @@ class ApplicationServiceProvider extends ServiceProvider
 
             /* Sprint */
             StoreSprintCommand::class => StoreSprintCommandHandler::class,
+            UpdateSprintCommand::class => UpdateSprintCommandHandler::class,
 
             /* Tenant */
             CreateTenantCommand::class => CreateTenantCommandHandler::class,
@@ -114,6 +119,7 @@ class ApplicationServiceProvider extends ServiceProvider
             GetUserByEmailQuery::class => GetUserByEmailQueryHandler::class,
             GetUserByIdQuery::class => GetUserByIdQueryHandler::class,
             ListUsersQuery::class => ListUsersQueryHandler::class,
+            GetSprintByIdQuery::class => GetSprintByIdQueryHandler::class,
         ]);
     }
 }

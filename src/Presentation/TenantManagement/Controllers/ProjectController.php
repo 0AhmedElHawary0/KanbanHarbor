@@ -42,7 +42,7 @@ final class ProjectController extends Controller
         );
 
         return response()->json([
-            'data' => $project,
+            'data' => CreateProjectData::from($project),
         ], Response::HTTP_CREATED);
     }
 

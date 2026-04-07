@@ -13,4 +13,8 @@ interface SprintRepositoryContract
     public function store(int $tenantId, int $projectId, StoreSprintData $data): Sprint;
 
     public function findAllByProjectId(int $projectId, int $tenantId): Collection;
+
+    public function getSprintById(int $sprintId, int $projectId, int $tenantId): ?Sprint;
+
+    public function update(int $tenantId, int $projectId, int $sprintId, StoreSprintData $data): ?Sprint;
 }
