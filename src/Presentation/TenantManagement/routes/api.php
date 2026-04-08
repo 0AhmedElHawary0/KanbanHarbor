@@ -29,9 +29,12 @@ Route::middleware([ResolveTenant::class, 'auth:sanctum'])->controller(SprintCont
     Route::get('tenants/{tenantId}/projects/{projectId}/sprints', 'index')->middleware('permission:sprint.view');
     Route::get('tenants/{tenantId}/projects/{projectId}/sprints/{sprintId}', 'show')->middleware('permission:sprint.view');
     Route::put('tenants/{tenantId}/projects/{projectId}/sprints/{sprintId}', 'update')->middleware('permission:sprint.update');
-    Route::patch('tenants/{tenantId}/projects/{projectId}/sprints/{sprintId}', 'archive')->middleware('permission:sprint-archive');
+    Route::patch('tenants/{tenantId}/projects/{projectId}/sprints/{sprintId}', 'archive')->middleware('permission:sprint.archive');
 });
 
 Route::middleware([ResolveTenant::class, 'auth:sanctum'])->controller(TaskController::class)->group(function (): void {
     Route::post('tenants/{tenantId}/sprints/{sprintId}/tasks', 'store')->middleware('permission:task.create');
+    Route::get('tenants/{tenantId}/sprints/{sprintId}/tasks', 'index')->middleware('permission:task.view');
+    Route::get('tenants/{tenantId}/tasks/{taskId}', 'show')->middleware('permission:task.view');
+    Route::put('tenants/{tenantId}/tasks/{taskId}', 'update')->middleware('permission:task.update');
 });

@@ -18,6 +18,9 @@ class Task extends Model
 
 
     protected $fillable = [
+        'tenant_id',
+        'project_id',
+        'sprint_id',
         'title',
         'description',
         'type',
@@ -25,7 +28,7 @@ class Task extends Model
         'status',
         'story_points',
         'assignee_id',
-        'due_date'
+        'due_date',
     ];
 
     public function users(): BelongsToMany
@@ -35,7 +38,7 @@ class Task extends Model
             ->withTimestamps();
     }
 
-    public function sprints(): BelongsTo
+    public function sprint(): BelongsTo
     {
         return $this->belongsTo(Sprint::class, 'sprint_id');
     }

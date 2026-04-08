@@ -28,6 +28,7 @@ final class StoreTaskCommandHandler extends CommandHandler
 
         $task = $this->taskRepository->store(
             $command->tenantId,
+            (int) $sprint->project_id,
             $command->sprintId,
             $command->taskData,
         );

@@ -9,7 +9,7 @@ use Domain\Task\Enums\TaskStatus;
 use Domain\Task\Enums\TaskType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Spatie\LaravelData\Attributes\Validation\Enum;
+use Illuminate\Validation\Rules\Enum;
 
 final class StoreTaskRequest extends FormRequest
 {

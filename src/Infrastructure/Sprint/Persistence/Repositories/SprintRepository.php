@@ -62,7 +62,7 @@ final class SprintRepository implements SprintRepositoryContract
 
     public function archive(int $tenantId, int $projectId, int $sprintId): ?Sprint
     {
-        $sprint = $this->getSprintById($sprintId, $projectId, $tenantId);
+        $sprint = $this->getSprintByIdAndProjectId($sprintId, $projectId, $tenantId);
 
         if ($sprint === null) {
             return null;
@@ -79,6 +79,6 @@ final class SprintRepository implements SprintRepositoryContract
         return Sprint::query()
             ->whereKey($sprintId)
             ->where('tenant_id', $tenantId)
-            ->firstOrFail();
+            ->first();
     }
 }

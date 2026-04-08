@@ -8,6 +8,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Spatie\Multitenancy\Exceptions\NoCurrentTenant;
@@ -72,6 +73,16 @@ return Application::configure(basePath: dirname(__DIR__))
             return response()->json([
                 'message' => 'Forbidden.',
             ], Response::HTTP_FORBIDDEN);
+        });
+
+        $exceptions->render(function (ModelNotFoundException $exception, Request $request): ?JsonResponse {
+            if (! $request->is('api/*')) {
+                return null;
+            }
+
+            return response()->json([
+                'message' => $exception->getMessage() !== '' ? $exception->getMessage() : 'Resource not found.',
+            ], Response::HTTP_NOT_FOUND);
         });
 
         $exceptions->render(function (\Throwable $exception, Request $request): ?JsonResponse {

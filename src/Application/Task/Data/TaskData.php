@@ -10,9 +10,13 @@ use Domain\Task\Enums\TaskPriority;
 use Domain\Task\Enums\TaskType;
 use Spatie\LaravelData\Data;
 
-class StoreTaskData extends Data
+class TaskData extends Data
 {
     public function __construct(
+        public int $id,
+        public int $tenant_id,
+        public int $project_id,
+        public int $sprint_id,
         public string $title,
         public ?string $description = null,
         public ?TaskType $type = null,

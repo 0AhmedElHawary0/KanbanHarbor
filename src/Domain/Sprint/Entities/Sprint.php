@@ -7,8 +7,8 @@ namespace Domain\Sprint\Entities;
 use Domain\Project\Entities\Project;
 use Domain\Sprint\Enums\SprintStatus;
 use Domain\Sprint\Factories\SprintFactory;
+use Domain\Task\Entities\Task;
 use Domain\Tenant\Entities\Tenant;
-use Illuminate\Console\View\Components\Task;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,7 +50,7 @@ class Sprint extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function task(): HasMany
+    public function tasks(): HasMany
     {
         return $this->hasMany(Task::class);
     }
