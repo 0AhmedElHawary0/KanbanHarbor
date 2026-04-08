@@ -6,11 +6,13 @@ namespace Infrastructure\Providers;
 
 use Domain\Project\Repositories\ProjectRepositoryContract;
 use Domain\Sprint\Repositories\SprintRepositoryContract;
+use Domain\Task\Repositories\TaskRepositoryContract;
 use Domain\Tenant\Repositories\TenantRepositoryContract;
 use Domain\User\Repositories\UserRepositoryContract;
 use Illuminate\Support\ServiceProvider;
 use Infrastructure\Project\Persistence\Repositories\ProjectRepository;
 use Infrastructure\Sprint\Persistence\Repositories\SprintRepository;
+use Infrastructure\Task\Persistence\Repositories\TaskRepository;
 use Infrastructure\Tenant\Persistence\Repositories\TenantRepository;
 use Infrastructure\Tenancy\RequestTenantContext;
 use Infrastructure\User\Persistence\Repositories\UserRepository;
@@ -24,6 +26,7 @@ class InfrastructureServiceProvider extends ServiceProvider
         TenantContext::class => RequestTenantContext::class,
         UserRepositoryContract::class => UserRepository::class,
         SprintRepositoryContract::class => SprintRepository::class,
+        TaskRepositoryContract::class => TaskRepository::class,
     ];
 
     public function register(): void {}

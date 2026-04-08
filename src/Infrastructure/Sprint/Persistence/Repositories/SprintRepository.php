@@ -32,7 +32,7 @@ final class SprintRepository implements SprintRepositoryContract
             ->get();
     }
 
-    public function getSprintById(int $sprintId, int $projectId, int $tenantId): ?Sprint
+    public function getSprintByIdAndProjectId(int $sprintId, int $projectId, int $tenantId): ?Sprint
     {
         return Sprint::query()
             ->whereKey($sprintId)
@@ -43,7 +43,7 @@ final class SprintRepository implements SprintRepositoryContract
 
     public function update(int $tenantId, int $projectId, int $sprintId, StoreSprintData $data): ?Sprint
     {
-        $sprint = $this->getSprintById($sprintId, $projectId, $tenantId);
+        $sprint = $this->getSprintByIdAndProjectId($sprintId, $projectId, $tenantId);
 
         if ($sprint === null) {
             return null;
@@ -72,5 +72,13 @@ final class SprintRepository implements SprintRepositoryContract
         $sprint->save();
 
         return $sprint->refresh();
+    }
+
+    public function getSprintById(int $tenantId, int $sprintId): ?Sprint
+    {
+        return Sprint::query()
+            ->whereKey($sprintId)
+            ->where('tenant_id', $tenantId)
+            ->firstOrFail();
     }
 }

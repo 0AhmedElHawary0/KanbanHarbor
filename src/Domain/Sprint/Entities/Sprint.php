@@ -8,9 +8,11 @@ use Domain\Project\Entities\Project;
 use Domain\Sprint\Enums\SprintStatus;
 use Domain\Sprint\Factories\SprintFactory;
 use Domain\Tenant\Entities\Tenant;
+use Illuminate\Console\View\Components\Task;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Sprint extends Model
 {
@@ -46,5 +48,10 @@ class Sprint extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function task(): HasMany
+    {
+        return $this->hasMany(Task::class);
     }
 }

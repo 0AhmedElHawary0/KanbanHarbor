@@ -26,7 +26,7 @@ final class GetSprintByIdQueryHandler extends QueryHandler
             throw new ModelNotFoundException('Project not found for this tenant.');
         }
 
-        $sprint = $this->sprintRepository->getSprintById(
+        $sprint = $this->sprintRepository->getSprintByIdAndProjectId(
             $query->getSprintId(),
             $query->getProjectId(),
             $query->getTenantId()

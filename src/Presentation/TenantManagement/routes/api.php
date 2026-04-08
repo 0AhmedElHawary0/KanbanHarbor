@@ -7,6 +7,7 @@ use Presentation\TenantManagement\Controllers\ProjectController;
 use Presentation\TenantManagement\Controllers\SprintController;
 use Presentation\TenantManagement\Controllers\TenantController;
 use Presentation\Tenancy\Middlewares\ResolveTenant;
+use Presentation\TenantManagement\Controllers\TaskController;
 
 Route::middleware(['auth:sanctum'])->post('tenants', [TenantController::class, 'store']);
 
@@ -29,4 +30,8 @@ Route::middleware([ResolveTenant::class, 'auth:sanctum'])->controller(SprintCont
     Route::get('tenants/{tenantId}/projects/{projectId}/sprints/{sprintId}', 'show')->middleware('permission:sprint.view');
     Route::put('tenants/{tenantId}/projects/{projectId}/sprints/{sprintId}', 'update')->middleware('permission:sprint.update');
     Route::patch('tenants/{tenantId}/projects/{projectId}/sprints/{sprintId}', 'archive')->middleware('permission:sprint-archive');
+});
+
+Route::middleware([ResolveTenant::class, 'auth:sanctum'])->controller(TaskController::class)->group(function (): void {
+    Route::post('tenants/{tenantId}/sprints/{sprintId}/tasks', 'store')->middleware('permission:task.create');
 });

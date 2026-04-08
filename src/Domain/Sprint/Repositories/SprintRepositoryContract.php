@@ -14,9 +14,11 @@ interface SprintRepositoryContract
 
     public function findAllByProjectId(int $projectId, int $tenantId): Collection;
 
-    public function getSprintById(int $sprintId, int $projectId, int $tenantId): ?Sprint;
+    public function getSprintByIdAndProjectId(int $sprintId, int $projectId, int $tenantId): ?Sprint;
 
     public function update(int $tenantId, int $projectId, int $sprintId, StoreSprintData $data): ?Sprint;
 
     public function archive(int $tenantId, int $projectId, int $sprintId): ?Sprint;
+
+    public function getSprintById(int $tenantId, int $sprintId): ?Sprint;
 }

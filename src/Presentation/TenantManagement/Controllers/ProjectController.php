@@ -11,7 +11,6 @@ use Application\Project\Data\CreateProjectData;
 use Application\Project\Data\ProjectData;
 use Application\Project\Queries\GetProjectByIdQuery;
 use Application\Project\Queries\ListTenantProjectsQuery;
-use Aws\Api\ErrorParser\JsonRpcErrorParser;
 use Illuminate\Http\JsonResponse;
 use Presentation\Controller;
 use Presentation\TenantManagement\Requests\CreateProjectRequest;

@@ -26,6 +26,8 @@ use Application\Sprint\Commands\UpdateSprintCommand;
 use Application\Sprint\Queries\GetSprintByIdQuery;
 use Application\Sprint\Queries\ListProjectSprintsQuery;
 use Application\Sprint\QueryHandlers\GetSprintByIdQueryHandler;
+use Application\Task\CommandHandlers\StoreTaskCommandHandler;
+use Application\Task\Commands\StoreTaskCommand;
 use Application\Tenant\CommandHandlers\AddTenantMemberCommandHandler;
 use Application\Tenant\CommandHandlers\AssignTenantMemberRoleCommandHandler;
 use Application\Tenant\CommandHandlers\CreateTenantCommandHandler;
@@ -100,12 +102,14 @@ class ApplicationServiceProvider extends ServiceProvider
             AddTenantMemberCommand::class => AddTenantMemberCommandHandler::class,
             AssignTenantMemberRoleCommand::class => AssignTenantMemberRoleCommandHandler::class,
 
-
             /* User */
             RegisterUserCommand::class => RegisterUserCommandHandler::class,
             UpdateUserCommand::class => UpdateUserCommandHandler::class,
             LoginUserCommand::class => LoginUserCommandHandler::class,
             LogoutUserCommand::class => LogoutUserCommandHandler::class,
+
+            /* Task */
+            StoreTaskCommand::class => StoreTaskCommandHandler::class,
         ]);
     }
 
@@ -129,7 +133,7 @@ class ApplicationServiceProvider extends ServiceProvider
             GetUserByIdQuery::class => GetUserByIdQueryHandler::class,
             ListUsersQuery::class => ListUsersQueryHandler::class,
 
-            /* Spint */
+            /* Sprint */
             GetSprintByIdQuery::class => GetSprintByIdQueryHandler::class,
         ]);
     }
