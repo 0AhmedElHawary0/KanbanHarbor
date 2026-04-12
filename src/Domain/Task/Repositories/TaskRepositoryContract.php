@@ -18,4 +18,6 @@ interface TaskRepositoryContract
     public function getTaskById(int $tenantId, int $taskId): ?Task;
 
     public function update(int $tenantId, int $taskId, UpdateTaskData $data): ?Task;
+
+    public function hardDelete(int $tenantId, int $taskId): bool;
 }

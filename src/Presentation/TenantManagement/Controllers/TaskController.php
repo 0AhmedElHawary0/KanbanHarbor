@@ -8,6 +8,7 @@ use Application\Bus\Contracts\CommandBusContract;
 use Application\Bus\Contracts\QueryBusContract;
 use Application\Task\Commands\StoreTaskCommand;
 use Application\Task\Commands\UpdateTaskCommand;
+use Application\Task\Commands\DeleteTaskCommand;
 use Application\Task\Data\StoreTaskData;
 use Application\Task\Data\TaskData;
 use Application\Task\Data\UpdateTaskData;
@@ -98,6 +99,27 @@ final class TaskController extends Controller
         return response()->json(
             [
                 'data' => $task
+            ],
+            Response::HTTP_OK
+        );
+    }
+
+    public function delete(int $tenantId, int $taskId): JsonResponse
+    {
+        $resolvedTenantId = $this->tenantContext->tenantId();
+        abort_if($tenantId !== $resolvedTenantId, Response::HTTP_BAD_REQUEST);
+
+        $deleted = $this->commandBus->dispatch(
+            new DeleteTaskCommand(
+                $resolvedTenantId,
+                $taskId,
+            )
+        );
+
+        return response()->json(
+            [
+                'message' => 'Task deleted successfully',
+                'data' => ['deleted' => $deleted],
             ],
             Response::HTTP_OK
         );

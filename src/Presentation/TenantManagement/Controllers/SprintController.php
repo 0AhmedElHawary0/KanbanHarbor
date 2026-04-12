@@ -9,6 +9,8 @@ use Application\Bus\Contracts\QueryBusContract;
 use Application\Sprint\Commands\ArchiveSprintCommand;
 use Application\Sprint\Commands\StoreSprintCommand;
 use Application\Sprint\Commands\UpdateSprintCommand;
+use Application\Sprint\Commands\DeleteSprintCommand;
+use Application\Sprint\Commands\RestoreSprintCommand;
 use Application\Sprint\Data\SprintData;
 use Application\Sprint\Data\StoreSprintData;
 use Application\Sprint\Queries\GetSprintByIdQuery;
@@ -112,6 +114,50 @@ final class SprintController extends Controller
         return response()->json(
             [
                 'data' => SprintData::from($sprint),
+            ],
+            Response::HTTP_OK
+        );
+    }
+
+    public function delete(int $tenantId, int $projectId, int $sprintId): JsonResponse
+    {
+        $resolvedTenantId = $this->tenantContext->tenantId();
+        abort_if($tenantId !== $resolvedTenantId, Response::HTTP_BAD_REQUEST);
+
+        $deleted = $this->commandBus->dispatch(
+            new DeleteSprintCommand(
+                $resolvedTenantId,
+                $projectId,
+                $sprintId,
+            )
+        );
+
+        return response()->json(
+            [
+                'message' => 'Sprint deleted successfully',
+                'data' => ['deleted' => $deleted],
+            ],
+            Response::HTTP_OK
+        );
+    }
+
+    public function restore(int $tenantId, int $projectId, int $sprintId): JsonResponse
+    {
+        $resolvedTenantId = $this->tenantContext->tenantId();
+        abort_if($tenantId !== $resolvedTenantId, Response::HTTP_BAD_REQUEST);
+
+        $restored = $this->commandBus->dispatch(
+            new RestoreSprintCommand(
+                $resolvedTenantId,
+                $projectId,
+                $sprintId,
+            )
+        );
+
+        return response()->json(
+            [
+                'message' => 'Sprint restored successfully',
+                'data' => ['restored' => $restored],
             ],
             Response::HTTP_OK
         );

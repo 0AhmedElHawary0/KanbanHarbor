@@ -97,4 +97,15 @@ final class TaskRepository implements TaskRepositoryContract
 
         return $task->refresh();
     }
+
+    public function hardDelete(int $tenantId, int $taskId): bool
+    {
+        $task = $this->getTaskById($tenantId, $taskId);
+
+        if ($task === null) {
+            return false;
+        }
+
+        return (bool) $task->forceDelete();
+    }
 }

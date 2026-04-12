@@ -21,4 +21,8 @@ interface SprintRepositoryContract
     public function archive(int $tenantId, int $projectId, int $sprintId): ?Sprint;
 
     public function getSprintById(int $tenantId, int $sprintId): ?Sprint;
+
+    public function softDelete(int $tenantId, int $projectId, int $sprintId): bool;
+
+    public function restore(int $tenantId, int $projectId, int $sprintId): bool;
 }

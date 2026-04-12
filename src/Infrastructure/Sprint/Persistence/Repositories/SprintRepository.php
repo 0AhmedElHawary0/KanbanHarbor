@@ -81,4 +81,31 @@ final class SprintRepository implements SprintRepositoryContract
             ->where('tenant_id', $tenantId)
             ->first();
     }
+
+    public function softDelete(int $tenantId, int $projectId, int $sprintId): bool
+    {
+        $sprint = $this->getSprintByIdAndProjectId($sprintId, $projectId, $tenantId);
+
+        if ($sprint === null) {
+            return false;
+        }
+
+        return (bool) $sprint->delete();
+    }
+
+    public function restore(int $tenantId, int $projectId, int $sprintId): bool
+    {
+        $sprint = Sprint::query()
+            ->onlyTrashed()
+            ->whereKey($sprintId)
+            ->where('project_id', $projectId)
+            ->where('tenant_id', $tenantId)
+            ->first();
+
+        if ($sprint === null) {
+            return false;
+        }
+
+        return (bool) $sprint->restore();
+    }
 }
