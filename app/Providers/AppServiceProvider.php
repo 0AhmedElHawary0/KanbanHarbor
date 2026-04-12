@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use Application\User\Events\UserRegistered;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Event;
+use Infrastructure\User\Listeners\SendEmailVerificationOnUserRegistered;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,5 +30,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void {}
 
-    public function boot(): void {}
+    public function boot(): void
+    {
+        Event::listen(UserRegistered::class, SendEmailVerificationOnUserRegistered::class);
+    }
 }

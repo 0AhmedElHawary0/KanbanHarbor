@@ -9,6 +9,7 @@ use Domain\User\Enums\UserRole;
 use Domain\User\Enums\UserStatus;
 use Domain\User\Factories\UserFactory;
 use Domain\User\Observers\UserObserver;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -18,7 +19,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 #[ObservedBy([UserObserver::class])]
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory;
     use Notifiable;

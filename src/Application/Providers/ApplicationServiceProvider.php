@@ -19,15 +19,19 @@ use Application\Project\QueryHandlers\ListTenantProjectsQueryHandler;
 use Application\Project\Queries\GetProjectByIdQuery;
 use Application\Project\Queries\ListTenantProjectsQuery;
 use Application\Sprint\CommandHandlers\ArchiveSprintCommandHandler;
+use Application\Sprint\CommandHandlers\DeleteSprintCommandHandler;
 use Application\Sprint\CommandHandlers\UpdateSprintCommandHandler;
 use Application\Sprint\Commands\ArchiveSprintCommand;
+use Application\Sprint\Commands\DeleteSprintCommand;
 use Application\Sprint\Commands\StoreSprintCommand;
 use Application\Sprint\Commands\UpdateSprintCommand;
 use Application\Sprint\Queries\GetSprintByIdQuery;
 use Application\Sprint\Queries\ListProjectSprintsQuery;
 use Application\Sprint\QueryHandlers\GetSprintByIdQueryHandler;
+use Application\Task\CommandHandlers\DeleteTaskCommandHandler;
 use Application\Task\CommandHandlers\StoreTaskCommandHandler;
 use Application\Task\CommandHandlers\UpdateTaskCommandHandler;
+use Application\Task\Commands\DeleteTaskCommand;
 use Application\Task\Commands\StoreTaskCommand;
 use Application\Task\Commands\UpdateTaskCommand;
 use Application\Task\Queries\GetTaskByIdQuery;
@@ -54,13 +58,16 @@ use Application\User\Commands\LoginUserCommand;
 use Application\User\Commands\LogoutUserCommand;
 use Application\User\Commands\RegisterUserCommand;
 use Application\User\Commands\UpdateUserCommand;
+use Application\User\Events\UserRegistered;
 use Application\User\QueryHandlers\GetUserByEmailQueryHandler;
 use Application\User\QueryHandlers\GetUserByIdQueryHandler;
 use Application\User\QueryHandlers\ListUsersQueryHandler;
 use Application\User\Queries\GetUserByEmailQuery;
 use Application\User\Queries\GetUserByIdQuery;
 use Application\User\Queries\ListUsersQuery;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Infrastructure\User\Listeners\SendEmailVerificationOnUserRegistered;
 
 class ApplicationServiceProvider extends ServiceProvider
 {
@@ -87,6 +94,10 @@ class ApplicationServiceProvider extends ServiceProvider
     {
         $this->registerCommandHandlers();
         $this->registerQueryHandlers();
+        Event::listen(
+            UserRegistered::class,
+            SendEmailVerificationOnUserRegistered::class,
+        );
     }
 
     protected function registerCommandHandlers(): void
@@ -102,6 +113,7 @@ class ApplicationServiceProvider extends ServiceProvider
             StoreSprintCommand::class => StoreSprintCommandHandler::class,
             UpdateSprintCommand::class => UpdateSprintCommandHandler::class,
             ArchiveSprintCommand::class => ArchiveSprintCommandHandler::class,
+            DeleteSprintCommand::class => DeleteSprintCommandHandler::class,
 
             /* Tenant */
             CreateTenantCommand::class => CreateTenantCommandHandler::class,
@@ -117,6 +129,7 @@ class ApplicationServiceProvider extends ServiceProvider
             /* Task */
             StoreTaskCommand::class => StoreTaskCommandHandler::class,
             UpdateTaskCommand::class => UpdateTaskCommandHandler::class,
+            DeleteTaskCommand::class => DeleteTaskCommandHandler::class,
         ]);
     }
 

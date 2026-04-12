@@ -26,6 +26,12 @@ final class LoginUserCommandHandler extends CommandHandler
             ]);
         }
 
+        if (! $user->hasVerifiedEmail()) {
+            throw ValidationException::withMessages([
+                'email' => ['Email is not verified. Please verify your email before logging in.'],
+            ]);
+        }
+
         $token = $this->userRepository->createApiToken(
             $user,
             $command->device_name !== '' ? $command->device_name : 'api',
